@@ -11,7 +11,12 @@ const hoursInput = document.querySelector('[data-hours]');
 const minutesInput = document.querySelector('[data-minutes]');
 const secondsInput = document.querySelector('[data-seconds]');
 
-const STORAGE_KEY = 'timer-date';
+let data = {
+  dateSelected: null,
+  timeInMs: null,
+};
+
+const LOCALSTORAGE_KEY = 'timer-date';
 
 const options = {
   enableTime: true,
@@ -21,12 +26,15 @@ const options = {
   onClose(selectedDates) {
     console.log(selectedDates[0]);
     if (selectedDates[0] < Date.now()) {
-      Notiflix.Notify.failure('Por facor seleeciones una fecha a furturo');
+      Notiflix.Notify.failure('Por favor seleeciones una fecha a furturo');
       start.disabled = true;
     } else {
       Notiflix.Notify.success('Fecha configurada');
       start.disabled = false;
       timer = new Date(picker.value).getTime();
+      data.dateSelected = picker.value;
+      data.timeInMs = timer;
+      localStorage.setItem(LOCALSTORAGE_KEY, JSON.stringify(data));
     }
   },
 };
@@ -46,10 +54,13 @@ start.addEventListener('click', () => {
   reset.disabled = false;
 });
 
-if (localStorage.getItem(STORAGE_KEY) !== null) {
-  timer = localStorage.getItem(STORAGE_KEY);
+if (JSON.parse(localStorage.getItem(LOCALSTORAGE_KEY)).timeInMs !== null) {
+  timer = JSON.parse(localStorage.getItem(LOCALSTORAGE_KEY)).timeInMs;
+  picker.value = JSON.parse(
+    localStorage.getItem(LOCALSTORAGE_KEY)
+  ).dateSelected;
+
   interval = setInterval(countDown, 1000);
-  //crear una variable recoverDate para poner la fecha que retoma en el picker
   start.disabled = true;
   picker.disabled = true;
 
@@ -77,7 +88,6 @@ function convertMs(ms) {
 }
 
 function countDown() {
-  localStorage.setItem(STORAGE_KEY, timer);
   const newDate = timer - Date.now();
   const { days, hours, minutes, seconds } = convertMs(newDate);
   daysInput.innerText = days;
@@ -93,7 +103,7 @@ function countDown() {
 
 function timerFinished() {
   clearInterval(interval);
-  localStorage.removeItem(STORAGE_KEY);
+  localStorage.removeItem(LOCALSTORAGE_KEY);
   start.disabled = false;
   reset.disabled = true;
   picker.disabled = false;
