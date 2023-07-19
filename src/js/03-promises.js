@@ -17,7 +17,7 @@ function submitPromise(e) {
     );
   } else {
     for (i = 0; i < Number(amount.value); i++) {
-      delayIncresing = Number(delay.value) + i * Number(step.value);
+      let delayIncresing = Number(delay.value) + i * Number(step.value);
       createPromise(i + 1, delayIncresing)
         .then(({ position, delay }) => {
           Notiflix.Notify.success(
@@ -34,7 +34,6 @@ function submitPromise(e) {
     }
   }
 }
-
 function createPromise(position, delay) {
   const shouldResolve = Math.random() > 0.3;
   return new Promise((resolve, reject) => {
