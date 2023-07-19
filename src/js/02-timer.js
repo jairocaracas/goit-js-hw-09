@@ -42,6 +42,7 @@ const options = {
 let timer;
 let interval;
 start.disabled = true;
+reset.disabled = true;
 
 flatpickr(picker, options);
 
@@ -50,8 +51,12 @@ start.addEventListener('click', () => {
   interval = setInterval(countDown, 1000);
   start.disabled = true;
   picker.disabled = true;
-
   reset.disabled = false;
+});
+
+reset.addEventListener('click', () => {
+  Notiflix.Notify.warning('Temporizador reiniciado');
+  timerFinished();
 });
 
 if (JSON.parse(localStorage.getItem(LOCALSTORAGE_KEY)).timeInMs !== null) {
@@ -62,15 +67,11 @@ if (JSON.parse(localStorage.getItem(LOCALSTORAGE_KEY)).timeInMs !== null) {
 
   interval = setInterval(countDown, 1000);
   start.disabled = true;
+  reset.disabled = false;
   picker.disabled = true;
 
   Notiflix.Notify.info('Temporizador retomado');
 }
-
-reset.addEventListener('click', () => {
-  Notiflix.Notify.warning('Temporizador reiniciado');
-  timerFinished();
-});
 
 function convertMs(ms) {
   // Number of milliseconds per unit of time
