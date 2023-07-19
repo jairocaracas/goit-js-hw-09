@@ -16,7 +16,7 @@ function submitPromise(e) {
       'Por favor ingrese un valor correcto en todos los campos'
     );
   } else {
-    for (i = 0; i < Number(amount.value); i++) {
+    for (let i = 0; i < Number(amount.value); i++) {
       let delayIncresing = Number(delay.value) + i * Number(step.value);
       createPromise(i + 1, delayIncresing)
         .then(({ position, delay }) => {
